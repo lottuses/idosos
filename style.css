@@ -59,6 +59,7 @@
     --nav-link-shadow-hover: rgba(229, 193, 88, 0.3);
     --menu-toggle-bg: rgba(229, 193, 88, 0.1);
     --menu-bar-color: #e5c158;
+    
 
     --highlight-bg: #f8fafc;
     --highlight-title: #0f172a;
@@ -415,20 +416,40 @@ header.menu-open .toggle {
     animation: twinkle 4s -1s infinite;
 }
 
+
+
 .scroll-reveal {
-    opacity: 0;
-    transform: translateY(40px);
-    transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), 
-                transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
-    will-change: transform, opacity;
+    /* Opacidade e blur controlados pelo rastro do scroll */
+    opacity: var(--progresso-scroll, 0);
+    filter: blur(calc(3px * (1 - var(--progresso-scroll, 0))));
+    
+    will-change: transform, opacity, filter;
 }
 
-/* Estado quando a seção entra na tela (revelada) */
-.scroll-reveal.reveal-active {
-    opacity: 1;
-    transform: translateY(0);
+/* Seções ÍMPARES: Vêm da ESQUERDA (-50px) e de BAIXO (40px) */
+main section.scroll-reveal:nth-of-type(odd) {
+    transform: translate(
+        calc(-50px * (1 - var(--progresso-scroll, 0))), 
+        calc(40px * (1 - var(--progresso-scroll, 0)))
+    ) rotate(calc(-0.5deg * (1 - var(--progresso-scroll, 0))));
 }
 
+/* Seções PARES: Vêm da DIREITA (50px) e de BAIXO (40px) */
+main section.scroll-reveal:nth-of-type(even) {
+    transform: translate(
+        calc(50px * (1 - var(--progresso-scroll, 0))), 
+        calc(40px * (1 - var(--progresso-scroll, 0)))
+    ) rotate(calc(0.5deg * (1 - var(--progresso-scroll, 0))));
+}
+
+/* Garante acessibilidade */
+@media (prefers-reduced-motion: reduce) {
+    .scroll-reveal {
+        opacity: 1 !important;
+        filter: none !important;
+        transform: none !important;
+    }
+}
 @keyframes twinkle {
 
     0%,
@@ -725,25 +746,27 @@ header.menu-open .expanded-links {
 }
 
 h1 {
-
     font-size: 3.6rem;
     color: var(--text-headings);
     margin-bottom: 1.5rem;
     font-weight: 600;
     letter-spacing: -0.5px;
     text-shadow: 1px 3px 10px rgba(0, 0, 0, 0.151);
-
+    
+    /* TOQUE MANTEIGA: Faz a cor do título transitar suavemente junto com o tema */
+    transition: color 0.4s ease;
 }
 
 h2 {
-
     font-size: 2.6rem;
     color: var(--text-headings);
     margin-bottom: 1.2rem;
     margin-top: 2.5rem;
     font-weight: 600;
     text-shadow: 1px 3px 10px rgba(0, 0, 0, 0.151);
-
+    
+    /* TOQUE MANTEIGA: Faz a cor do título transitar suavemente junto com o tema */
+    transition: color 0.4s ease;
 }
 
 p {
@@ -814,6 +837,8 @@ ul.text-list {
     text-align: center;
     margin-top: 3.5rem;
     width: 100%;
+    margin-bottom: 250px;
+    clear: both;
 
 }
 
@@ -833,6 +858,35 @@ ul.text-list {
     gap: 2rem;
     flex-wrap: wrap;
 
+}
+
+.dark-mode .pushable .front {
+    background: radial-gradient(#ffffff, #ececec) !important; /* Fundo do botão vira branco premium */
+    color: #141414 !important;      /* Texto fica escuro para dar contraste total */
+    text-shadow: none !important;   /* Remove a sombra escura do texto para ficar nítido */
+    box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.6), 0 1px 2px 1px rgba(0, 0, 0, 0.1);
+}
+
+.dark-mode .pushable .edge {
+    background: linear-gradient(to right, #b5b5b5 0%, #dbdbdb 8%, #b5b5b5 92%, #9e9e9e 100%) !important; /* Bordinha 3D em cinza claro */
+}
+
+/* Deixa o filtro de brilho original agir no hover do modo escuro */
+.dark-mode .pushable:hover {
+    filter: brightness(90%); /* Uma leve escurecida no branco ao passar o mouse */
+}
+
+/* Mantém a subida suave original do .front e da .shadow */
+.dark-mode .pushable:hover .front {
+    transform: translateY(-8px);
+}
+
+.dark-mode .pushable:hover .shadow {
+    transform: translateY(6px);
+}
+
+.dark-mode .pushable:active .front {
+    transform: translateY(-2px);
 }
 
 .pushable {
@@ -867,7 +921,6 @@ ul.text-list {
 }
 
 .edge {
-
     position: absolute;
     top: 0;
     left: 0;
@@ -875,11 +928,12 @@ ul.text-list {
     width: 100%;
     border-radius: 8px;
     background: linear-gradient(to right, #1a1a1a 0%, #333333 8%, #1a1a1a 92%, #0d0d0d 100%);
-
+    
+    /* TOQUE MANTEIGA: Faz a bordinha 3D mudar de cor suavemente ao trocar o tema */
+    transition: background 0.4s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .front {
-
     display: block;
     position: relative;
     border-radius: 8px;
@@ -892,8 +946,12 @@ ul.text-list {
     box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.25), 0 1px 2px 1px rgba(0, 0, 0, 0.2);
     text-shadow: 0 -1px rgba(0, 0, 0, 0.5);
     transform: translateY(-6px);
-    transition: transform 600ms cubic-bezier(0.3, 0.7, 0.4, 1);
-
+    
+    /* TOQUE MANTEIGA: Adicionado background, color e box-shadow na transição original */
+    transition: transform 600ms cubic-bezier(0.3, 0.7, 0.4, 1), 
+                background 0.4s cubic-bezier(0.25, 1, 0.5, 1), 
+                color 0.4s cubic-bezier(0.25, 1, 0.5, 1),
+                box-shadow 0.4s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .pushable:hover {
@@ -964,6 +1022,7 @@ ul.text-list {
     position: relative;
     user-select: none;
     -webkit-user-select: none;
+    transition: color 0.4s ease;
 
 }
 
@@ -1034,6 +1093,7 @@ ul.text-list {
     line-height: 1.6;
     font-size: 1rem;
     margin: 0;
+    transition: color 0.4s ease;
 
 }
 
@@ -1074,6 +1134,8 @@ ul.text-list {
     object-fit: cover;
     pointer-events: none;
 }
+
+
 
 .image-overlay {
 
