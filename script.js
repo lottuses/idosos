@@ -97,10 +97,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (menuToggle && mainHeader) {
         menuToggle.addEventListener("click", () => {
-            // Dispara a rotação dos 3 traços para virar um X
+
             menuToggle.classList.toggle("active");
-            
-            // Faz o Header expandir a sua altura vertical para baixo
+
             mainHeader.classList.toggle("menu-open");
         });
     }
@@ -108,7 +107,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 const themeToggleBtn = document.getElementById('theme-toggle');
 
-// Recupera o tema anterior salvo no navegador
 const savedTheme = localStorage.getItem('theme');
 if (savedTheme === 'dark') {
     document.body.classList.add('dark-mode');
@@ -117,39 +115,29 @@ if (savedTheme === 'dark') {
     themeToggleBtn.setAttribute('aria-pressed', 'false');
 }
 
-// Disparador de cliques para o switch de urso
 themeToggleBtn.addEventListener('click', () => {
     document.body.classList.toggle('dark-mode');
-    
+
     const isDark = document.body.classList.contains('dark-mode');
     themeToggleBtn.setAttribute('aria-pressed', isDark ? 'true' : 'false');
     localStorage.setItem('theme', isDark ? 'dark' : 'light');
 });
 
-
-// ==========================================
-// SCROLL ANIMATION (INTERSECTION OBSERVER - 50% DA TELA)
-// ==========================================
 function gerenciarScrollManteiga() {
     const secoes = document.querySelectorAll('.scroll-reveal');
     const alturaJanela = window.innerHeight;
-    const linhaDeCorte = alturaJanela * 0.5; // Linha de gatilho no meio da tela
+    const linhaDeCorte = alturaJanela * 0.5;
 
     secoes.forEach(secao => {
         const retangulo = secao.getBoundingClientRect();
-        
-        // Calcula onde o topo da seção está em relação à parte de baixo da tela
-        // Conforme você scrolla, esse valor vai subindo suavemente de 0 a 1
+
         const progressoVisivel = (alturaJanela - retangulo.top) / linhaDeCorte;
-        
-        // Trava o valor estritamente entre 0 (invisível) e 1 (100% revelado)
+
         const fatorSuave = Math.min(Math.max(progressoVisivel, 0), 1);
 
-        // Injeta o valor em tempo real para o CSS usar
         secao.style.setProperty('--progresso-scroll', fatorSuave);
     });
 }
 
-// Vincula o cálculo diretamente aos eventos de rolagem e carregamento
 window.addEventListener('scroll', gerenciarScrollManteiga);
 window.addEventListener('DOMContentLoaded', gerenciarScrollManteiga);
